@@ -31,6 +31,8 @@
             imgElement.src = 'https://imgur.com/a/server-down-LvMrl74'; // 替換為您的公開圖片鏈接
             imgElement.alt = '伺服器斷線，請稍後再試！';
             imgElement.style.display = 'block'; // 顯示備用圖片
+    document.getElementById('content-container').style.display = 'none';
+    document.getElementById('server-down-message').style.display = 'block';
         }
 
         // 使用 fetch 檢測伺服器狀態
@@ -294,6 +296,12 @@ function datedisplay(){ //Positive = East
 <p><img  src="/problem/problem1_img/3.jpg"  height="400" width="600"></p>
 <p>就可以正常運作了。</p>
 <p><img  src="/problem/problem1_img/4.jpg"  height="400" width="600"></p>
+
+<div id="server-down-message" style="text-align: center; color: red; display: none;">
+    <p>伺服器斷線！請稍後再試，或聯繫管理員：admin@example.com</p>
+</div>
+
+
 </div></div> 
 	
 	 
@@ -350,4 +358,7 @@ document.write(NewWords);
 } 
 SetNewWords();
 -->
+
+
+
 </SCRIPT>
