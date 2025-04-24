@@ -31,18 +31,20 @@
             imgElement.src = 'https://imgur.com/a/server-down-LvMrl74?text=Server+Down'; // 替換為您的公開圖片鏈接
             imgElement.alt = '伺服器斷線，請稍後再試！';
             imgElement.style.display = 'block'; // 顯示備用圖片
-    document.getElementById('content-container').style.display = 'none';
-    document.getElementById('server-down-message').style.display = 'block';
+ document.getElementById('content-container').style.display = 'none'; // 隱藏主內容
         }
 
-        // 使用 fetch 檢測伺服器狀態
+
+
+  // 使用 fetch 檢測伺服器狀態
         function checkServerStatus() {
             const imgElement = document.getElementById('server-status-img');
             fetch('https://saka0u0.tplinkdns.com/server_status.php?nocache=' + new Date().getTime())
                 .then(response => {
                     if (!response.ok) throw new Error('Server down');
-                    // 伺服器正常，隱藏圖片
+                    // 伺服器正常，隱藏圖片，顯示主內容
                     imgElement.style.display = 'none';
+                    document.getElementById('content-container').style.display = 'block';
                 })
                 .catch(error => {
                     // 伺服器斷線，顯示備用圖片
@@ -50,6 +52,11 @@
                 });
         }
 
+        // 頁面載入時檢查伺服器狀態
+        window.onload = function() {
+            checkServerStatus();
+            window.setTimeout('getSecs()', 1);
+        };
        
    
 </script>
