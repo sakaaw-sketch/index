@@ -55,17 +55,9 @@
                         // 伺服器在線，顯示原有內容
                         document.getElementById('loading-message').style.display = 'none';
                         document.getElementById('content-container').style.display = 'block';
-                    } else {
-                        console.log("Server responded with status: " + response.status);
-                        // 伺服器回應非 200，重定向到 404.html
-                        window.location.href = '404.html';
-                    }
+                    } 
                 })
-                .catch(error => {
-                    console.log("Fetch error: " + error.message);
-                    // 伺服器斷線，重定向到 404.html
-                    window.location.href = '404.html';
-                });
+            
         }
 
         // 計時器功能
