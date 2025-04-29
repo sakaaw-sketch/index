@@ -1,0 +1,191 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="bookmark" href="/favicon.ico"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/acc.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="css.css" type="text/css">
+    <title>坂妹總頁</title>
+    <style>
+        ::-webkit-scrollbar {display:none}
+        .loading {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        #timer-display {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function addBookmarkForBrowser(sTitle, sUrl) {
+            if (window.sidebar && window.sidebar.addPanel) {
+                window.sidebar.addPanel(sTitle, sUrl, "");
+            } else if (window.external) {
+                window.external.AddFavorite(sUrl, sTitle);
+            } else {
+                alert("您的瀏覽器不支援此功能!");
+            }
+        }
+
+        // 檢查伺服器狀態
+        function checkServerStatus() {
+            console.log("Checking server status...");
+            fetch('https://saka0u0.tplinkdns.com/home/', {
+                method: 'GET',
+                mode: 'cors', // 允許跨域請求
+                cache: 'no-cache' // 避免快取影響
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Server is up!");
+                        // 伺服器在線，顯示原有內容
+                        document.getElementById('loading-message').style.display = 'none';
+                        document.getElementById('content-container').style.display = 'block';
+                    } else {
+                        console.log("Server responded with status: " + response.status);
+                        // 伺服器回應非 200，重定向到 404.html
+                        window.location.href = '404.html';
+                    }
+                })
+                .catch(error => {
+                    console.log("Fetch error: " + error.message);
+                    // 伺服器斷線，重定向到 404.html
+                    window.location.href = '404.html';
+                });
+        }
+
+        // 計時器功能
+        var startday = new Date();
+        var clockStart = startday.getTime();
+
+        function initStopwatch() {
+            var myTime = new Date();
+            var timeNow = myTime.getTime();
+            var timeDiff = timeNow - clockStart;
+            return timeDiff / 1000; // 返回秒數
+        }
+
+        function getSecs() {
+            var mySecs = initStopwatch();
+            var mySecs1 = Math.floor(mySecs) - 10 + "秒"; // 計算整數秒數
+            document.getElementById('timer-display').textContent = "已停留時間: " + mySecs1; // 顯示在 div 中
+            window.setTimeout('getSecs()', 1000); // 每秒更新
+        }
+
+        // 頁面載入時執行
+        window.onload = function() {
+            setTimeout(checkServerStatus, 1000); // 延遲 1 秒檢查伺服器
+            window.setTimeout('getSecs()', 1); // 啟動計時器
+        };
+    </script>
+</head>
+<body bgcolor="#ffffff">
+    <!-- 載入中訊息 -->
+    <div id="loading-message" class="loading">
+        <h1>檢查伺服器狀態...</h1>
+        <p>正在測試 https://saka0u0.tplinkdns.com/home/</p>
+    </div>
+
+    <!-- 主內容容器，預設隱藏 -->
+    <div id="content-container" style="display: none;">
+        <!-- 計時器顯示 -->
+        <div id="timer-display">已停留時間: 0秒</div>
+
+        <div class=sub>
+            <!-- 右 -->
+            <!-- 信息面板 -->
+            <div class=panel>
+                <h2 id="top" class="ttttt">信息</h2>	
+                <a href='javascript:addBookmarkForBrowser("坂妹", "/");'>加入最愛</a><p>
+                <a download href="/img/QR_code.png"><img src="/img/QR_code.png" height="200" width="200"></a><p><br>
+                <img src="img/dSF3zNo.gif" alt="hihi" style="width:52px;height:49px;">
+                <iframe name="index" width="200px" src="https://saka0u0.tplinkdns.com/home/usercount.php" frameborder="0" noresize title="index"></iframe>
+                <div class=contents>
+                </div>
+            </div>
+
+            <div class=panel>	
+                <h2 id="目錄" class="ttttt">目錄</h2>	
+                <div class=contents>
+                    <li class="t1">
+                        <a class="external" href="#問題" class="t1">問題</a><br>
+                    <li class="t1">
+                        <a class="external" href="#其他功能" class="t1">其他功能</a><br>	
+                    <a class="external" href="http://saka0u0.tplinkdns.com//wordpress/" class="t1">坂妹社</a><br>	
+                    <a class="external" href="https://saka0u0.tplinkdns.com/home/Member/Member_system_part2/index2.php" class="t1">會員系統</a><br>
+                    <br><br>     
+                </div>
+            </div>
+
+            <div class=panel>
+                <h2>說明</h2>
+                <div class=contents style="left: 0px; top: 0px">
+                    <div id="apDiv1">          
+                        <!-- BEGIN CBOX - www.cbox.ws - v001 -->
+                        <!-- 請自行申請Cbox等留言板嵌入-->
+                        <!-- END CBOX -->
+                    </div>
+                    <p>1.請先看系統有無開放</p>
+                    <p>2.目錄需要<font color=" #ff1a1a">所有資訊載入完</font>先可用</p>
+                    <p> ============================</p>
+                    每100秒重新整理一次
+                    <p><iframe width="200" height="34px" frameBorder="0" src="https://saka0u0.tplinkdns.com/home/ver/ver.php"></iframe></p>
+                </div>
+            </div>	
+        </div>	
+        <!-- 左 -->
+        <div class=main>
+            <div class=panel>
+                <h2 id="問題" class="ttttt">問題Q&A </h2>
+                <div class=contents>
+                    <p>正在重定向到公開頁面...</p>
+                    <p>顯示地方</p>
+                    <p><iframe name="index" width="100px" height="100px" src="https://saka0u0.tplinkdns.com/problem/problem1.php" frameborder="0" noresize title="index" alt="沒有顯示"></iframe></p>
+                    <div class=panel>
+                        <h2><font color="#0000ff">1.如果沒有顯示已載入指令碼(別外如其他地方[空白]也需要</font></h2>
+                        <div class=contents>
+                            <p>到網址列最右邊找到一個<img src="/problem/problem1_img/chrome_shield.png" >盾牌圖示。</p>
+                            <p><img src="/problem/problem1_img/1.jpg" height="400" width="600"></p>
+                            <p>會出現一個這個網頁正在嘗試載入來源未經驗證的指令碼視窗，點選載入不安全的指令碼連結。</p>
+                            <p><img src="/problem/problem1_img/3.jpg" height="400" width="600"></p>
+                            <p>就可以正常運作了。</p>
+                            <p><img src="/problem/problem1_img/4.jpg" height="400" width="600"></p>
+                        </div>
+                    </div> 
+                    <a class="external" href="#top" class="t1">top</a>
+                </div>
+            </div>
+            <div class=panel>
+                <h2 id="Check" class="ttttt"><font>Check</font></h2>
+                <iframe width="500px" height="200px" frameBorder="0" src="https://saka0u0.tplinkdns.com/home/checkopen/checkopen-g.html"></iframe>
+            </div>
+            <br>
+            <div class=panel>
+                <h2 id="其他功能" class="ttttt"><font>其他功能</font></h2>
+                <div class=contents>
+                    <a href="https://saka0u0.tplinkdns.com/HK/funtion_index/anyfunction/play_myslef.html">播放本地文件 </a>     <a class="external" href="#top" class="t1">top</a>
+                    <br>
+                    <a href="https://steamcd-project.netlify.app/music.html">自訂音樂與CD旋轉 </a>     <a class="external" href="#top" class="t1">top</a>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br><br>
+        <iframe width="0px" height="0px" frameBorder="0" src="/IP_check/check/getip_home.php"></iframe>
+    </div>
+</body>	
+</html>
