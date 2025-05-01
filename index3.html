@@ -30,6 +30,12 @@
             margin: 10px 0;
             text-align: center;
         }
+        #server-error {
+            text-align: center;
+            color: red;
+            display: none;
+            margin: 10px 0;
+        }
     </style>
     <script>
         // 書籤功能
@@ -55,14 +61,19 @@
                         console.log("Server is up!");
                         document.getElementById('loading-message').style.display = 'none';
                         document.getElementById('content-container').style.display = 'block';
+                        document.getElementById('server-error').style.display = 'none';
                     } else {
                         console.log("Server responded with status: " + response.status);
-                        window.location.href = '/404.html';
+                        document.getElementById('loading-message').style.display = 'none';
+                        document.getElementById('content-container').style.display = 'block';
+                        document.getElementById('server-error').style.display = 'block';
                     }
                 })
                 .catch(error => {
                     console.log("Fetch error: " + error.message);
-                    window.location.href = '/404.html';
+                    document.getElementById('loading-message').style.display = 'none';
+                    document.getElementById('content-container').style.display = 'block';
+                    document.getElementById('server-error').style.display = 'block';
                 });
         }
 
@@ -98,6 +109,11 @@
     <div id="loading-message" class="loading">
         <h1>檢查伺服器狀態...</h1>
         <p>正在測試伺服器...</p>
+    </div>
+
+    <!-- 伺服器錯誤訊息 -->
+    <div id="server-error">
+        <p>無法連接到伺服器，請稍後再試或聯繫管理員：admin@example.com</p>
     </div>
 
     <!-- 主內容容器，預設隱藏 -->
@@ -182,7 +198,6 @@
             </div>
         </div>
         <br><br><br><br><br><br><br><br>
-        <iframe width="0px" height="0px" frameBorder="0" src="/IP_check/check/getip_home.php"></iframe>
     </div>
 </body>	
 </html>
