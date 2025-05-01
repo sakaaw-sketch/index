@@ -79,7 +79,7 @@
 
         // 計時器功能（2 分鐘倒數）
         function startTimer() {
-            const totalSeconds = 120; // 2 分鐘
+            const totalSeconds = 220; // 2 分鐘
             let remainingSeconds = totalSeconds;
             const display = document.getElementById('timer-display');
             
@@ -91,7 +91,7 @@
                 
                 if (remainingSeconds <= 0) {
                     clearInterval(interval);
-                    window.location.href = '/music.html'; // 重定向到 music.html
+                    window.location.href = '/index2.html'; // 重定向到 music.html
                 }
                 remainingSeconds--;
             }, 1000);
