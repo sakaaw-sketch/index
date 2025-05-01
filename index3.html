@@ -52,8 +52,9 @@
         // 檢查伺服器狀態
         function checkServerStatus() {
             console.log("Checking server status...");
-            fetch('/api/home', { // 使用 Netlify 代理
+            fetch('https://saka0u0.tplinkdns.com/home/', {
                 method: 'GET',
+                mode: 'cors',
                 cache: 'no-cache'
             })
                 .then(response => {
@@ -79,7 +80,7 @@
 
         // 計時器功能（2 分鐘倒數）
         function startTimer() {
-            const totalSeconds = 220; // 2 分鐘
+            const totalSeconds = 120; // 2 分鐘
             let remainingSeconds = totalSeconds;
             const display = document.getElementById('timer-display');
             
