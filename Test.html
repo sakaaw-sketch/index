@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="bookmark" href="/favicon.ico"/>
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/js/acc.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="/css.css" type="text/css">
+    <title>坂妹總頁</title>
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        .loading {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        #timer-display {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+            text-align: center;
+        }
+        #server-error {
+            text-align: center;
+            color: red;
+            display: none;
+            margin: 10px 0;
+        }
+    </style>
+    <script>
+        // 書籤功能
+        function addBookmarkForBrowser(sTitle, sUrl) {
+            if (window.sidebar && window.sidebar.addPanel) {
+                window.sidebar.addPanel(sTitle, sUrl, "");
+            } else if (window.external) {
+                window.external.AddFavorite(sUrl, sTitle);
+            } else {
+                alert("您的瀏覽器不支援此功能!");
+            }
+        }
+
+        // 檢查伺服器狀態
+        function checkServerStatus() {
+            console.log("Checking server status...");
+            fetch('/api/home', { // 使用 Netlify 代理
+                method: 'GET',
+                cache: 'no-cache'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Server is up!");
+                        document.getElementById('loading-message').style.display = 'none';
+                        document.getElementById('content-container').style.display = 'block';
+                        document.getElementById('server-error').style.display = 'none';
+                    } else {
+                        console.log("Server responded with status: " + response.status);
+                        document.getElementById('loading-message').style.display = 'none';
+                        document.getElementById('content-container').style.display = 'block';
+                        document.getElementById('server-error').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.log("Fetch error: " + error.message);
+                    document.getElementById('loading-message').style.display = 'none';
+                    document.getElementById('content-container').style.display = 'block';
+                    document.getElementById('server-error').style.display = 'block';
+                });
+        }
+
+        // 計時器功能（2 分鐘倒數）
+        function startTimer() {
+            const totalSeconds = 120; // 2 分鐘
+            let remainingSeconds = totalSeconds;
+            const display = document.getElementById('timer-display');
+            
+            const interval = setInterval(function() {
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                display.textContent = `剩餘時間: ${formattedTime}`;
+                
+                if (remainingSeconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = '/music.html'; // 重定向到 music.html
+                }
+                remainingSeconds--;
+            }, 1000);
+        }
+
+        // 頁面載入時執行
+        window.onload = function() {
+            setTimeout(checkServerStatus, 1000); // 延遲 1 秒檢查伺服器
+            startTimer(); // 啟動計時器
+        };
+    </script>
+</head>
+<body bgcolor="#ffffff">
+    <!-- 載入中訊息 -->
+    <div id="loading-message" class="loading">
+        <h1>檢查伺服器狀態...</h1>
+        <p>正在測試伺服器...</p>
+    </div>
+
+    <!-- 伺服器錯誤訊息 -->
+    <div id="server-error">
+        <p>無法連接到伺服器，請稍後再試或聯繫管理員：admin@example.com</p>
+    </div>
+
+    <!-- 主內容容器，預設隱藏 -->
+    <div id="content-container" style="display: none;">
+        <!-- 計時器顯示 -->
+        <div id="timer-display">剩餘時間: 02:00</div>
+
+        <div class="sub">
+            <!-- 右 -->
+            <!-- 信息面板 -->
+            <div class="panel">
+                <h2 id="top" class="ttttt">信息</h2>	
+                <a href='javascript:addBookmarkForBrowser("坂妹", "/");'>加入最愛</a><p>
+                <a download href="/img/QR_code.png"><img src="/img/QR_code.png" height="200" width="200"></a><p><br>
+                <img src="/img/dSF3zNo.gif" alt="hihi" style="width:52px;height:49px;">
+                <div class="contents"></div>
+            </div>
+
+            <div class="panel">	
+                <h2 id="目錄" class="ttttt">目錄</h2>	
+                <div class="contents">
+                    <li class="t1"><a class="external" href="#問題" class="t1">問題</a><br>
+                 
+                    <br><br>     
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>說明</h2>
+                <div class="contents" style="left: 0px; top: 0px">
+                    <div id="apDiv1">
+                        <!-- BEGIN CBOX - www.cbox.ws - v001 -->
+                        <!-- 請自行申請Cbox等留言板嵌入-->
+                        <!-- END CBOX -->
+                    </div>
+                    <p>1.請先看系統有無開放</p>
+                    <p>2.目錄需要<font color="#ff1a1a">所有資訊載入完</font>先可用</p>
+                    <p>============================</p>
+                    <p>每100秒重新整理一次</p>
+                
+                </div>
+            </div>	
+        </div>	
+        <!-- 左 -->
+        <div class="main">
+            <div class="panel">
+                <h2 id="問題" class="ttttt">問題Q&A </h2>
+                <div class="contents">
+                    <p>正常</p>
+                    <p>正常</p>
+                     <p>正常</p>
+                    </div> 
+                    <a class="external" href="#top" class="t1">top</a>
+                </div>
+            </div>
+          
+            <br>
+          
+        <br><br><br><br><br><br><br><br>
+    </div>
+</body>	
+</html>
