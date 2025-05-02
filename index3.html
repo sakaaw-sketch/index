@@ -70,7 +70,7 @@
                         document.getElementById('server-error').style.display = 'block';
                         setTimeout(() => {
                             window.location.href = '/404.html';
-                        }, 5000); // 5 秒後重定向到 404.html
+                        }, 40000); // 40 秒後重定向到 404.html
                     }
                 })
                 .catch(error => {
@@ -98,7 +98,7 @@
                 
                 if (remainingSeconds <= 0) {
                     clearInterval(interval);
-                    window.location.href = '/music.html'; // 重定向到 music.html
+                    window.location.href = '/index2.html'; // 重定向到 music.html
                 }
                 remainingSeconds--;
             }, 1000);
