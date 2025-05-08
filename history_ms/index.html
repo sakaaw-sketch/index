@@ -631,15 +631,22 @@
 									  <h3><i class="fas fa-bullhorn"></i> 主台 </h3>
 									   <button class="collapse-toggle" type="button" data-toggle="collapse" data-target="#主台-update">展開/收起</button>
 									   <div id="主台-update" class="collapse">
-                                        <!-- 總頁/會員 -->
+                                        <!-- 總頁/會員系統 -->
                                         <div class="announcement-subsection">
-                                            <h4>總頁/會員-更新記錄</h4>
+                                            <h4>總頁/會員系統-更新記錄</h4>
                                             <button class="collapse-toggle" type="button" data-toggle="collapse" data-target="#update202409Member">展開/收起</button>
                                            
                                             <div id="update202409Member" class="collapse">
                                                <ul> <ul>
 						       <h5> 現在更新的</h5> 
-                                                      
+						        <li>接待中心頁面
+<p>新增計時器功能，允許用戶啟動、暫停和重置計時器。
+將登入按鈕改為彈窗登入界面，直接提交登入請求。
+改進登出功能，通過 AJAX 發送請求，成功後跳轉到 usercenter.php。
+修復登入輸入框事件綁定錯誤，確保元素存在時才綁定。
+新增待辦事項清單功能，使用 localStorage 儲存任務。
+新增天氣查詢功能，使用 OpenWeatherMap API 獲取天氣數據。</p></li>
+                         
                                                     <li>usercenter_升級Ver 4.0-更簡潔/擴展了會員中心(資訊&點播/福利)的互動功能</li>
                                                    <li>重寫LOGIN/singup/forget_pw 的UI -升級Ver 2.0，更現在化 </li>
                                                     <li>把本來在會員儀表板(點播/福利)的 ->整合了點播/福利儀表板</li>
