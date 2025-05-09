@@ -1,0 +1,238 @@
+<html>
+ <head>
+     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     <link rel="shortcut icon" href="/favicon.ico"/>
+     <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+     <link rel="icon" href="/favicon.ico"/>
+     <link rel="bookmark" href="/favicon.ico"/>
+     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+     <meta http-equiv="Content-Script-Type" content="text/javascript">
+     <meta http-equiv="Content-Style-Type" content="text/css">
+     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js" charset="UTF-8"></script>
+     <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" charset="UTF-8"></script>
+     <script type="text/javascript" src="js/jquery.cookie.js" charset="UTF-8"></script>
+     <script type="text/javascript" src="js/acc.js" charset="UTF-8"></script>
+     <link rel="stylesheet" href="css.css" type="text/css">
+     <script>
+         function addBookmarkForBrowser(sTitle, sUrl) {
+             if (window.sidebar && window.sidebar.addPanel) {
+                 window.sidebar.addPanel(sTitle, sUrl, "");
+             } else if (window.external) {
+                 window.external.AddFavorite(sUrl, sTitle);
+             } else {
+                 alert("您的瀏覽器不支援此功能!");
+             }
+         }
+ 
+         // 當伺服器斷線時，顯示公開免費伺服器上的備用圖片
+         function handleServerDown(imgElement) {
+             console.log("Server down detected! Showing backup image...");
+             imgElement.src = 'https://i.imgur.com/s9D4Q14.png'; // 移除無效的 ?text= 參數
+             imgElement.alt = '伺服器斷線，請稍後再試！';
+             imgElement.style.display = 'block'; // 顯示備用圖片
+             document.getElementById('content-container').style.display = 'none'; // 隱藏主內容
+             document.getElementById('server-down-message').style.display = 'block'; // 顯示斷線提示
+         }
+ 
+         // 使用 fetch 檢測伺服器狀態
+         function checkServerStatus() {
+             const imgElement = document.getElementById('server-status-img');
+             console.log("Checking server status...");
+             fetch('https://saka0u0.tplinkdns.com/server_status.php?nocache=' + new Date().getTime(), {
+                 method: 'GET',
+                 cache: 'no-store' // 禁用快取
+             })
+                 .then(response => {
+                     if (!response.ok) {
+                         console.log("Fetch failed with status: " + response.status);
+                         throw new Error('Server down');
+                     }
+                     console.log("Server is up!");
+                     imgElement.style.display = 'none';
+                     document.getElementById('content-container').style.display = 'block';
+                     document.getElementById('server-down-message').style.display = 'none';
+                 })
+                 .catch(error => {
+                     console.log("Fetch error: " + error.message);
+                     handleServerDown(imgElement);
+                 });
+         }
+ 
+         // 頁面載入時檢查伺服器狀態
+         window.onload = function() {
+             setTimeout(checkServerStatus, 1000); // 延遲 1 秒檢查，確保網絡超時可觸發
+             window.setTimeout('getSecs()', 1);
+         };
+     </script>
+     <title>接待前台處</title>
+
+ </head>
+ <style>
+     ::-webkit-scrollbar {display:none}
+ </style>
+ <body bgcolor="#ffffff" onLoad="window.setTimeout('getSecs()',1)"> 
+ 
+     <!-- 伺服器狀態檢測圖片 -->
+     <div style="text-align: center; margin: 10px 0;">
+         <img id="server-status-img" src="https://saka0u0.tplinkdns.com/server_status.png?nocache=1" 
+              onerror="handleServerDown(this)" 
+              style="display: none;" alt="檢查伺服器狀態中...">
+     </div>
+ 
+     <!-- 斷線提示訊息 -->
+     <div id="server-down-message" style="text-align: center; color: red; display: none;">
+         <p>伺服器斷線！請稍後再試，或聯繫管理員：admin@example.com</p>
+     <p>暫時使用<a href="https://steamcd-project.netlify.app/music.html" >自訂音樂與CD旋轉播放器</a>代替着啦
+     </div>
+ 
+     <!-- 主內容容器 -->
+ 
+  <div id="content-container">
+         <div class=sub>
+             <!-- 右 -->
+             <!-- 信息面板 -->
+             <div class=panel>
+                 <h2 id="top" class="ttttt">信息</h2>	
+                 <a href='javascript:addBookmarkForBrowser("坂妹", "/");'>加入最愛</a><p>
+                 <a download href="/img/QR_code.png"><img src="/img/QR_code.png" height="200" width="200"></a><p><br>
+                 <img src="img/dSF3zNo.gif" alt="hihi" style="width:52px;height:49px;">
+   
+                 <div class=contents>
+                 </div>
+             </div>
+ 
+             <div class=panel>	
+                 <h2 id="目錄" class="ttttt">目錄</h2>	
+                 <div class=contents>
+       <!--            <li class="t1">
+                         <a class="external" href="#問題" class="t1">問題</a><br>   -->
+                     <li class="t1">
+                         <a class="external" href="#其他功能" class="t1">其他功能</a><br>	
+                        <li class="t1">
+                         <a class="external" href="#檢查伺服器狀態" class="t1">檢查伺服器狀態</a><br>
+
+                 
+                     <br><br>     
+                 </div>
+             </div>
+ 
+ <div class=panel>
+ 	<h2>說明</h2>
+ 	<div class=contents style="left: 0px; top: 0px">
+ 	<div id="apDiv1">          
+ <!-- BEGIN CBOX - www.cbox.ws - v001 -->
+ <!-- 請自行申請Cbox等留言板嵌入-->
+ <!-- END CBOX -->
+ 	    </div>
+ 
+          <p>1.請先看系統有無開放</p>
+ 		 <p>2.目錄需要<font color=" #ff1a1a">所有資訊載入完</font>先可用</p>
+ 
+ 		<p> ============================</p>
+         每100秒重新整理一次
+ 		<p><iframe width="200" height="34px" frameBorder="0" src="https://saka0u0.tplinkdns.com/home/ver/ver.php"></iframe></p>
+ </ul>
+ 	    </p>
+ </div>
+ 
+ 	</div>	
+ 
+ 
+ 
+ 
+ <!-- /右 -->
+ </div>	
+  <!-- 左 -->
+ 
+ 
+ 
+ <div class=main>
+
+
+<!--
+  <div class=panel>
+ <h2 id="問題" class="ttttt">問題Q&A </h2>
+ <div class=contents>
+ <p>正在重定向到公開頁面...</p>
+ <p>顯示地方</p>
+ <p> <iframe name="index" width="100px" height="100px" src="https://saka0u0.tplinkdns.com/problem/problem1.php" frameborder="0"  noresize title="index" alt="沒有顯示"></iframe>          </p>
+  <!------
+  <div class=panel>
+ <h2 > <font color="#0000ff">1.如果沒有顯示已載入指令碼(別外如其他地方[空白]也需要</font></h2>
+  <div class=contents>
+ <p>到網址列最右邊找到一個<img  src="/problem/problem1_img/chrome_shield.png" >盾牌圖示。</p>
+ <p><img  src="/problem/problem1_img/1.jpg"  height="400" width="600"></p>
+ <p>會出現一個這個網頁正在嘗試載入來源未經驗證的指令碼視窗，點選載入不安全的指令碼連結。</p>
+ <p><img  src="/problem/problem1_img/3.jpg"  height="400" width="600"></p>
+ <p>就可以正常運作了。</p>
+ <p><img  src="/problem/problem1_img/4.jpg"  height="400" width="600"></p>
+ </div></div> 
+ 
+ 
+ 	 <a class="external"
+             href="#top"
+             class="t1 "
+         >
+             top
+      </a>
+ </div></div>  -->
+   <div class=panel>
+ <h2 id="Check" class="ttttt"><font >Check(主頁)</font></h2>
+ <!--<div class=contents> -->
+
+ <iframe width="500px" height="200px" frameBorder="0" src="https://as4621.myddns.me:8443/checkop/checkopne16080/checkopen16080.html"></iframe>
+    <font size="2" color="blue" > <a href="https://sakaouo.whf.bz/checkopen/checkopne16080/checkopen16080.html" >點去查看啦(備用)</a> </font>
+
+ </div>
+ <br>
+ 
+ <!--------------------------------------------------------------------------------------------------------->
+   <div class=panel>
+ <h2 id="其他功能" class="ttttt"><font >其他功能</font></h2>
+ <div class=contents>
+ <a href="https://saka0u0.tplinkdns.com/HK/funtion_index/anyfunction/play_myslef.html"  >播放本地文件 </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="external"href="#top"class="t1 ">top</a>
+ <br>
+ <a href="https://steamcd-project.netlify.app/music.html"  >自訂音樂與CD旋轉 </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="external"href="#top"class="t1 ">top</a>
+  </div> </div>
+ <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+ <div class=panel> 
+                 <h2 id="檢查伺服器狀態" class="ttttt"><font>檢查伺服器狀態  </font></h2>
+      <!--   width="100%"        <div class=contents>  -->
+
+
+            <!--          <iframe id="r_frame" width="100%" height="370px" frameBorder="0" src="http://saka751.netlify.app/Test-2.html"></iframe>-->
+
+
+ <font size="7" color="blue" > <a href="http://saka751.netlify.app/Test.html" >點去查看啦</a>  </font>
+
+          <!--         </div>  -->
+             </div>
+        
+ <br>
+ <br>
+ </div></div></div>
+ 
+ 
+ 
+ </div>
+ <!--------------------------------------------------------------------------------------------------------->
+ 
+         <br><br><br><br><br><br><br><br>
+ 
+         <iframe width="0px" height="0px" frameBorder="0" src="/IP_check/check/getip_home.php"></iframe>
+     </div>
+ </body>	
+ </html>
+ 
+ <SCRIPT LANGUAGE="Javascript">
+ <!--
+ var Words ="%3Cscript%20language%3D%22JavaScript%22%3E%0A%3C%21--%0A//%u5148%u62FF%u5230%u76EE%u524D%u7684%u6642%u9593%0Astartday%20%3D%20new%20Date%28%29%3B%0AclockStart%20%3D%20startday.getTime%28%29%3B%0A%0Afunction%20initStopwatch%28%29%20%0A%7B%20%0Avar%20myTime%20%3D%20new%20Date%28%29%3B%20%0Avar%20timeNow%20%3D%20myTime.getTime%28%29%3B%20%0Avar%20timeDiff%20%3D%20timeNow%20-%20clockStart%3B%20//%u73FE%u5728%u7684%u6642%u9593%u548C%u8D77%u59CB%u7684%u6642%u9593%u76F8%u6E1B%u5F97%u5230%u5DF2%u7D93%u904E%u7684%u6642%u9593%0Athis.diffSecs%20%3D%20timeDiff/1000%3B%20//%u9664%u4EE51000%u5C31%u662F%u79D2%0Areturn%28this.diffSecs%29%3B%20//%u5C07%u5DEE%u7570%u79D2%u6578%u56DE%u50B3%u7D66getSecs%u51FD%u6578%0A%7D%20%0Afunction%20getSecs%28%29%20%0A%7B%20%0Avar%20mySecs%20%3D%20initStopwatch%28%29%3B%20%0Avar%20mySecs1%20%3D%20%22%22+mySecs%3B%20//%u5C07%u6578%u5B57%u8B8A%u6210%u6587%u5B57%0AmySecs1%3D%20eval%28mySecs1.substring%280%2CmySecs1.indexOf%28%22.%22%29%29%29%20-%2010%20+%20%22%u79D2%22%3B%20//%u7B97%u51FA%u5012%u6578%u7684%u6642%u9593%0Adocument.form1.timespent.value%20%3D%20mySecs1%3B%20//%u5C07%u5012%u6578%u6642%u9593%u986F%u793A%u5728%u9801%u9762%u7A7A%u9694%u4E2D%0Awindow.setTimeout%28%27getSecs%28%29%27%2C1000%29%3B%20//%u6BCF1%u79D2%u91CD%u65B0%u57F7%u884C%u4E00%u6B21%0A%7D%0A--%3E%0A%3C/script%3E";
+ function SetNewWords() {
+     var NewWords;
+     NewWords = unescape(Words);
+     document.write(NewWords);
+ } 
+ SetNewWords();
+ -->
+ </SCRIPT>
