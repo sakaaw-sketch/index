@@ -6,9 +6,6 @@
     <title>伺服器狀態現況 - 主台</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
     <style>
         body {
             scrollbar-width: none; /* Firefox */
@@ -23,128 +20,122 @@
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
-    <div id="root"></div>
-    <script type="text/babel">
-        function App() {
-            const [isLoading, setIsLoading] = React.useState(true);
-            const [serverError, setServerError] = React.useState(false);
-            const [timeLeft, setTimeLeft] = React.useState(120); // 2 分鐘倒數
+    <div class="container mx-auto p-4 max-w-4xl">
+        <!-- 載入中訊息 -->
+        <div id="loading-message" class="flex flex-col items-center justify-center h-screen">
+            <h1 class="text-2xl font-bold text-gray-700">檢查伺服器狀態...</h1>
+            <p class="text-gray-500 mt-2">正在測試伺服器...</p>
+        </div>
 
-            // 檢查伺服器狀態
-            React.useEffect(() => {
-                setTimeout(() => {
-                    fetch('/api/home', { method: 'GET', cache: 'no-cache' })
-                        .then(response => {
-                            setIsLoading(false);
-                            if (response.ok) {
-                                setServerError(false);
-                            } else {
-                                setServerError(true);
-                            }
-                        })
-                        .catch(() => {
-                            setIsLoading(false);
-                            setServerError(true);
-                        });
-                }, 1000);
-            }, []);
+        <!-- 伺服器錯誤訊息 -->
+        <div id="server-error" class="hidden bg-red-100 text-red-700 p-4 rounded text-center mb-4">
+            無法連接到伺服器，請稍後再試或聯繫管理員：admin@example.com
+        </div>
 
-            // 計時器
-            React.useEffect(() => {
-                const interval = setInterval(() => {
-                    setTimeLeft(prev => {
-                        if (prev <= 1) {
-                            clearInterval(interval);
-                            window.location.href = 'http://saka751.netlify.app/test';
-                            return 0;
-                        }
-                        return prev - 1;
-                    });
-                }, 1000);
-                return () => clearInterval(interval);
-            }, []);
+        <!-- 主內容容器 -->
+        <div id="content-container" class="hidden">
+            <!-- 計時器顯示 -->
+            <div id="timer-display" class="text-center mb-4">
+                <p class="text-lg font-semibold text-gray-800">剩餘時間: 02:00</p>
+            </div>
 
-            // 書籤功能
-            const addBookmark = () => {
-                const title = document.title;
-                const url = window.location.href;
-                if (window.sidebar && window.sidebar.addPanel) {
-                    window.sidebar.addPanel(title, url, '');
-                } else if (window.external && 'AddFavorite' in window.external) {
-                    window.external.AddFavorite(url, title);
-                } else {
-                    alert('您的瀏覽器不支援此功能，請手動添加書籤！');
-                }
-            };
-
-            // 格式化時間
-            const formatTime = (seconds) => {
-                const minutes = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            };
-
-            return (
-                <div className="container mx-auto p-4 max-w-4xl">
-                    {isLoading ? (
-                        <div className="flex flex-col items-center justify-center h-screen">
-                            <h1 className="text-2xl font-bold text-gray-700">檢查伺服器狀態...</h1>
-                            <p className="text-gray-500 mt-2">正在測試伺服器...</p>
-                        </div>
-                    ) : (
-                        <>
-                            {serverError && (
-                                <div className="bg-red-100 text-red-700 p-4 rounded text-center mb-4">
-                                    無法連接到伺服器，請稍後再試或聯繫管理員：admin@example.com
-                                </div>
-                            )}
-                            <div className="text-center mb-4">
-                                <p className="text-lg font-semibold text-gray-800">剩餘時間: {formatTime(timeLeft)}</p>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-white p-6 rounded-lg shadow-md">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-4">檢查</h2>
-                                    <iframe
-                                        src="https://sakaouo.whf.bz/checkopen/for_check/checkopen-netlify.html"
-                                        height="300"
-                                        title="檢查"
-                                    ></iframe>
-                                    <a href="#top" className="text-blue-500 hover:underline mt-2 block">回到頂部</a>
-                                </div>
-                                <div className="bg-white p-6 rounded-lg shadow-md">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-4">檢查(備用)</h2>
-                                    <iframe
-                                        src="https://as4621.myddns.me:8443/home/for_check/checkopen-netlify.html"
-                                        height="300"
-                                        title="檢查(備用)"
-                                    ></iframe>
-                                    <a
-                                        href="http://as4621.myddns.me:16080/home/for_check/checkopen-netlify.html"
-                                        className="text-blue-500 hover:underline mt-2 block"
-                                    >
-                                        點去查看啦(備用)
-                                    </a>
-                                    <a href="#top" className="text-blue-500 hover:underline mt-2 block">回到頂部</a>
-                                </div>
-                            </div>
-                            <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                                <h2 className="text-xl font-bold text-gray-800 mb-4">信息</h2>
-                                <img src="/img/dSF3zNo.gif" alt="hihi" className="w-14 h-14 mb-4" />
-                                <p className="text-gray-600">伺服器狀態信息</p>
-                                <button
-                                    onClick={addBookmark}
-                                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                                >
-                                    添加書籤
-                                </button>
-                            </div>
-                        </>
-                    )}
+            <!-- 檢查區域 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">檢查</h2>
+                    <iframe
+                        src="https://sakaouo.whf.bz/checkopen/for_check/checkopen-netlify.html"
+                        height="300"
+                        title="檢查"
+                    ></iframe>
+                    <a href="#top" class="text-blue-500 hover:underline mt-2 block">回到頂部</a>
                 </div>
-            );
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">檢查(備用)</h2>
+                    <iframe
+                        src="https://as4621.myddns.me:8443/home/for_check/checkopen-netlify.html"
+                        height="300"
+                        title="檢查(備用)"
+                    ></iframe>
+                    <a
+                        href="http://as4621.myddns.me:16080/home/for_check/checkopen-netlify.html"
+                        class="text-blue-500 hover:underline mt-2 block"
+                    >
+                        點去查看啦(備用)
+                    </a>
+                    <a href="#top" class="text-blue-500 hover:underline mt-2 block">回到頂部</a>
+                </div>
+            </div>
+
+            <!-- 信息面板 -->
+            <div class="bg-white p-6 rounded-lg shadow-md mt-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">信息</h2>
+                <img src="/img/dSF3zNo.gif" alt="hihi" class="w-14 h-14 mb-4" />
+                <p class="text-gray-600">伺服器狀態信息</p>
+                <button
+                    onclick="addBookmark()"
+                    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                    添加書籤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 書籤功能
+        function addBookmark() {
+            const title = document.title;
+            const url = window.location.href;
+            if (window.sidebar && window.sidebar.addPanel) {
+                window.sidebar.addPanel(title, url, '');
+            } else if (window.external && 'AddFavorite' in window.external) {
+                window.external.AddFavorite(url, title);
+            } else {
+                alert('您的瀏覽器不支援此功能，請手動添加書籤！');
+            }
         }
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        // 檢查伺服器狀態
+        function checkServerStatus() {
+            console.log('Checking server status...');
+            fetch('/api/home', { method: 'GET', cache: 'no-cache' })
+                .then(response => {
+                    document.getElementById('loading-message').classList.add('hidden');
+                    document.getElementById('content-container').classList.remove('hidden');
+                    if (!response.ok) {
+                        document.getElementById('server-error').classList.remove('hidden');
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('loading-message').classList.add('hidden');
+                    document.getElementById('content-container').classList.remove('hidden');
+                    document.getElementById('server-error').classList.remove('hidden');
+                });
+        }
+
+        // 計時器功能
+        function startTimer() {
+            let remainingSeconds = 120; // 2 分鐘
+            const display = document.getElementById('timer-display');
+            const interval = setInterval(() => {
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                display.textContent = `剩餘時間: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (remainingSeconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = 'http://saka751.netlify.app/test';
+                }
+                remainingSeconds--;
+            }, 1000);
+        }
+
+        // 頁面載入時執行
+        window.onload = function () {
+            setTimeout(checkServerStatus, 1000);
+            startTimer();
+        };
     </script>
 </body>
 </html>
