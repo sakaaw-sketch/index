@@ -41,7 +41,7 @@
         }
 
         async function updateStatus() {
-            const url = 'https://saka0u0.tplinkdns.com/server_status.php';
+            const url = 'http://saka0u0.tplinkdns.com/server_status.php';
             const result = await checkServerStatus(url);
             const statusText = document.getElementById('status-text');
             const link = document.getElementById('link');
