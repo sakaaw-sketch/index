@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="30">
+    <title>伺服器狀態檢查</title>
+</head>
+<body>
+    <p id="status" style="font-size: 7em; color: #000000;">
+        系統: <span id="status-text">檢查中...</span>
+    </p>
+    <a id="link" style="display: none;" href="https://saka751.netlify.app/index3.html" target="_blank">In</a>
+
+    <script>
+        async function checkServerStatus(url) {
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        'Connection': 'keep-alive'
+                    },
+                    redirect: 'follow', // 跟隨重定向
+                    cache: 'no-store', // 禁用快取
+                    mode: 'cors' // 允許跨域請求
+                });
+
+                return {
+                    success: response.ok && response.status === 200,
+                    httpCode: response.status,
+                    error: response.ok ? '' : '請求失敗'
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    httpCode: 0,
+                    error: error.message
+                };
+            }
+        }
+
+        async function updateStatus() {
+            const url = 'https://saka0u0.tplinkdns.com/server_status.php';
+            const result = await checkServerStatus(url);
+            const statusText = document.getElementById('status-text');
+            const link = document.getElementById('link');
+
+            if (result.success) {
+                statusText.style.color = 'blue';
+                statusText.textContent = '正常';
+                link.style.display = 'inline';
+            } else {
+                statusText.style.color = '#FF0000';
+                statusText.textContent = '不正常';
+                link.style.display = 'none';
+            }
+        }
+
+        // 頁面加載時立即檢查
+        window.onload = updateStatus;
+    </script>
+</body>
+</html>
