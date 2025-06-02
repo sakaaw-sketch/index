@@ -21,9 +21,9 @@
                         'Accept-Language': 'en-US,en;q=0.5',
                         'Connection': 'keep-alive'
                     },
-                    redirect: 'follow', // 跟隨重定向
-                    cache: 'no-store', // 禁用快取
-                    mode: 'cors' // 允許跨域請求
+                    redirect: 'follow',
+                    cache: 'no-store',
+                    mode: 'cors'
                 });
 
                 return {
@@ -41,7 +41,7 @@
         }
 
         async function updateStatus() {
-            const url = 'http://saka0u0.tplinkdns.com/server_status.php';
+            const url = 'https://saka0u0.tplinkdns.com/server_status.php'; // 修改為 HTTPS
             const result = await checkServerStatus(url);
             const statusText = document.getElementById('status-text');
             const link = document.getElementById('link');
@@ -52,12 +52,11 @@
                 link.style.display = 'inline';
             } else {
                 statusText.style.color = '#FF0000';
-                statusText.textContent = '不正常';
+                statusText.textContent = `不正常 (錯誤: ${result.error}, HTTP 狀態: ${result.httpCode})`; // 顯示詳細錯誤
                 link.style.display = 'none';
             }
         }
 
-        // 頁面加載時立即檢查
         window.onload = updateStatus;
     </script>
 </body>
