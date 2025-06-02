@@ -1,3 +1,16 @@
+<?php
+// 允許來自 https://saka751.netlify.app 的跨域請求
+header('Access-Control-Allow-Origin: https://saka751.netlify.app');
+// 允許的 HTTP 方法
+header('Access-Control-Allow-Methods: GET');
+// 允許的請求頭部
+header('Access-Control-Allow-Headers: Accept, Accept-Language, Connection');
+
+// 你的伺服器狀態檢查邏輯
+// 例如：返回一個簡單的狀態響應
+echo json_encode(['status' => 'ok']);
+?>
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
