@@ -1,216 +1,341 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-    <meta http-equiv="Expires" content="Mon, 26 Jul 1997 05:00:00 GMT">
-    <title>接待處主頁</title>
-    <link rel="shortcut icon" href="/favicon.ico"/>
-    <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
-    <link rel="icon" href="/favicon.ico"/>
-    <link rel="bookmark" href="/favicon.ico"/>
-    <!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
-    <!-- Bootstrap 4.6.2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" defer>
-    <link rel="stylesheet" href="css/index.css?v=1728902400">
-    <!-- 系統主題切換 -->
+    <title>Choose Your Destination</title>
     <style>
-        @media (prefers-color-scheme: dark) {
-            body:not(.light) {
-                background: linear-gradient(135deg, #1a202c, #2d3748);
-                color: #e0e0e0;
+        :root {
+            /* CSS 變量，方便未來樣式擴展 */
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --blur-radius: 15px;
+            --border-radius: 30px;
+            --text-color-dark: #ffffff;
+            --text-color-light: #1a1a1a;
+            --glow-color-dark: rgba(255, 255, 255, 0.5);
+            --glow-color-light: rgba(100, 100, 100, 0.5);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e1e1e, #3a3a3a);
+            overflow: hidden;
+            transition: background 0.5s ease;
+            position: relative;
+        }
+
+        /* 模擬深色/淺色模式 */
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        }
+
+        /* 背景粒子畫布 */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Headbar 樣式 */
+        .headbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-radius));
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* 主容器樣式 */
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-radius));
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 80px;
+        }
+
+        /* 液態玻璃效果：動態光影 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 70%);
+            opacity: 0.5;
+            pointer-events: none;
+            transition: transform 0.5s ease;
+        }
+
+        .container:hover::before {
+            transform: translate(10%, 10%) scale(1.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--text-color-dark);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin: 0 0 20px;
+            transition: color 0.3s ease;
+        }
+
+        body.light-mode h1 {
+            color: var(--text-color-light);
+        }
+
+        /* 液態玻璃按鈕 */
+        .glass-button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            color: var(--text-color-dark);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            margin: 10px;
+        }
+
+        body.light-mode .glass-button {
+            color: var(--text-color-light);
+        }
+
+        /* 脈動光暈效果 */
+        .glass-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--glow-color-dark) 10%, transparent 70%);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: pulse 2s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        body.light-mode .glass-button::after {
+            background: radial-gradient(circle, var(--glow-color-light) 10%, transparent 70%);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        .glass-button:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .glass-button:hover::after {
+            opacity: 0.8;
+        }
+
+        .glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+            z-index: 0;
+        }
+
+        .glass-button:hover::before {
+            left: 100%;
+        }
+
+        /* 動態適應模式切換按鈕 */
+        .mode-toggle {
+            padding: 8px 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: none;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        body.light-mode .mode-toggle {
+            color: var(--text-color-light);
+        }
+
+        .mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin-top: 100px;
+            }
+            .glass-button {
+                padding: 12px 20px;
+                font-size: 1rem;
+                width: 100%;
+                margin: 10px 0;
+            }
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
-<body class="light">
-    <!-- 導航欄 -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">接待處主頁</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto align-items-center">
-                    <li class="nav-item">
-          <button class="btn btn-refresh" onclick="window.location.reload()"><i class="fas fa-sync-alt me-1"></i> 重新整理</button>
-                    </li>
-                    <li class="nav-item">
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body>
+    <!-- 背景粒子畫布 -->
+    <canvas id="particleCanvas"></canvas>
 
-    <!-- 伺服器狀態檢測 -->
+    <!-- Headbar -->
+    <header class="headbar">
+        <button class="mode-toggle" onclick="App.toggleMode()">Toggle Mode</button>
+    </header>
+
     <div class="container">
-        <div class="card server-status-card mb-4" id="server-down-message" style="display: none;">
-            <div class="card-header">
-                <h3 class="card-title">伺服器斷線</h3>
-            </div>
-            <div class="card-body text-center">
-                <p>伺服器斷線！請稍後再試，或聯繫管理員：admin@example.com</p>
-                <p>暫時使用 <a href="https://steamcd-project.netlify.app/music.html" class="btn btn-link">自訂音樂與 CD 旋轉播放器</a> 代替。</p>
-                <button class="btn btn-retry" onclick="checkServerStatus()"><i class="fas fa-sync-alt me-1"></i> 重試</button>
-            </div>
-        </div>
+        <h1>Choose Your Destination</h1>
+        <button class="glass-button" onclick="App.redirectToMain()">Main Homepage</button>
+        <button class="glass-button" onclick="App.redirectToReception()">Reception Homepage</button>
     </div>
 
-    <!-- 主內容容器 -->
-    <div class="container" id="content-container">
-        <div class="row">
-            <!-- 左側內容 -->
-            <div class="col-lg-8">
-                <!-- 檢查伺服器狀態 -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">檢查伺服器狀態</h3>
-                    </div>
-                    <div class="card-body">
-                        <h4 id="server-status-front">0w0</h4>
-                        <div class="content-frame mb-3">
-                            <div class="iframe-loading" id="iframeLoadingFront"><div class="spinner"></div></div>
-              
-      <iframe src="https://sakaouo.whf.bz/server_music_query/server_music_query.php" class="responsive-iframe" title="前台狀態" loading="lazy" onload="hideIframeLoading('iframeLoadingFront')"></iframe>
-                        </div>
-         <p><a href="https://sakaouo.wuaze.com/index/server/server_music_query.php" target="_blank" class="btn btn-link"><i class="fas fa-link me-1"></i> 備用連結1(異地備份)</a></p>
-         <p><a href="http://as4621.myddns.me:16080/server_music_query/server_music_query.php" target="_blank" class="btn btn-link"><i class="fas fa-link me-1"></i> 備用連結2(自架伺服)</a></p> 
-                       
-                    </div>
-                </div>
-                <!-- 其他 -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">其他</h3>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                          <!------------->
-                    </div>
-                </div>
-            </div>
-            <!-- 右側內容 -->
-            <div class="col-lg-4">
-                <!-- 資訊面板 -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">資訊</h3>
-                    </div>
-                    <div class="card-body text-center">
-                        <p><a href="javascript:void(0)" onclick="addBookmark()" class="btn btn-link"><i class="fas fa-bookmark me-1"></i> 加入最愛</a></p>
-                    </div>
-                </div>
-                <!-- 目錄 -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">目錄/其他功能</h3>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                           
-                            <li><a href="https://saka0u0.tplinkdns.com/HK/funtion_index/anyfunction/play_myslef.html" class="btn btn-link"><i class="fas fa-play-circle me-1"></i> 播放本地文件</a></li>
-                            <li><a href="https://steamcd-project.netlify.app/music.html" class="btn btn-link"><i class="fas fa-music me-1"></i> 自訂音樂與 CD 旋轉</a></li>
-                      
-                           
-                        </ul>
-                    </div>
-                </div>
-                <!-- 說明 -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">說明</h3>
-                    </div>
-                    <div class="card-body">
-                        <p>1. 請先確認系統是否開放。</p>
-                        <p>2. 目錄需所有資訊載入完成後可用。</p>
-                        <p class="text-center">========================</p>
-                        <p>可手動重新整理頁面以更新狀態。</p>
-                        <div class="content-frame mb-3">
-                            <div class="iframe-loading" id="iframeLoadingVer"><div class="spinner"></div></div>
-                            <iframe src="https://sakaouo.myartsonline.com/ver.php" class="responsive-iframe version-iframe" title="版本資訊" loading="lazy" onload="hideIframeLoading('iframeLoadingVer')"></iframe>
-                        </div>
-      <!--        <button class="btn btn-refresh" onclick="window.location.reload()"><i class="fas fa-sync-alt me-1"></i> 重新整理</button>  -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     <script>
-        // 伺服器狀態檢查
-        function checkServerStatus(retryCount = 0, maxRetries = 3) {
-            const imgElement = document.getElementById('server-status-img');
-            const contentContainer = document.getElementById('content-container');
-            const serverDownMessage = document.getElementById('server-down-message');
-            console.log(`Checking server status (Attempt ${retryCount + 1}/${maxRetries})...`);
-            fetch('https://saka0u0.tplinkdns.com/server_status.php?nocache=' + new Date().getTime(), {
-                method: 'GET',
-                cache: 'no-store'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Server down');
-                    }
-                    console.log("Server is up!");
-                    imgElement.style.display = 'none';
-                    contentContainer.style.display = 'block';
-                    serverDownMessage.style.display = 'none';
-                })
-                .catch(error => {
-                    console.log("Fetch error: " + error.message);
-                    if (retryCount < maxRetries - 1) {
-                        setTimeout(() => checkServerStatus(retryCount + 1, maxRetries), 10000);
-                    } else {
-                        imgElement.src = 'https://i.imgur.com/s9D4Q14.png';
-                        imgElement.alt = '伺服器斷線，請稍後再試！';
-                        imgElement.style.display = 'block';
-                        contentContainer.style.display = 'none';
-                        serverDownMessage.style.display = 'block';
-                    }
+        // 核心功能模塊
+        const App = {
+            // 滑鼠移動觸發動態光影
+            initLightEffect: () => {
+                const container = document.querySelector('.container');
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    container.style.setProperty('--mouse-x', `${x}px`);
+                    container.style.setProperty('--mouse-y', `${y}px`);
                 });
-        }
+            },
 
-        // 頁面載入時檢查伺服器狀態
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(checkServerStatus, 1000);
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.add('fade-in');
-            });
-        });
+            // 重定向到總主頁
+            redirectToMain: () => {
+                new Audio('https://www.soundjay.com/buttons/button-09.mp3').play();
+                window.location.href = 'https://sakaouo.wuaze.com/index/index.php';
+            },
 
-        // 隱藏 iframe 載入動畫
-        function hideIframeLoading(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+            // 重定向到接待處主頁
+            redirectToReception: () => {
+                new Audio('https://www.soundjay.com/buttons/button-09.mp3').play();
+                window.location.href = 'https://saka751.netlify.app/index1.html';
+            },
 
-        // 加入最愛功能
-        function addBookmark() {
-            const title = "坂妹";
-            const url = "https://saka751.netlify.app/";
-            try {
-                if (window.sidebar && window.sidebar.addPanel) { // Firefox
-                    window.sidebar.addPanel(title, url, "");
-                } else if (window.external && ('AddFavorite' in window.external)) { // IE
-                    window.external.AddFavorite(url, title);
-                } else if (window.opera && window.print) { // Opera
-                    const elem = document.createElement('a');
-                    elem.setAttribute('href', url);
-                    elem.setAttribute('title', title);
-                    elem.setAttribute('rel', 'sidebar');
-                    elem.click();
-                } else {
-                    alert("您的瀏覽器不支援自動加入書籤，請手動添加：\n1. 按 Ctrl+D（或 Cmd+D）\n2. 選擇添加書籤\n3. 儲存到您喜愛的位置");
-                }
-            } catch (e) {
-                alert("加入書籤失敗，請手動添加：\n1. 按 Ctrl+D（或 Cmd+D）\n2. 選擇添加書籤\n3. 儲存到您喜愛的位置");
+            // 模擬環境光線適應（深色/淺色模式）
+            toggleMode: () => {
+                document.body.classList.toggle('light-mode');
+            },
+
+            // 背景粒子效果
+            initBackgroundParticles: () => {
+                const canvas = document.getElementById('particleCanvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                const particles = Array.from({ length: 50 }, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 5 + 2,
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 2 - 1
+                }));
+                const animate = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = document.body.classList.contains('light-mode') 
+                            ? 'rgba(100, 100, 100, 0.3)' 
+                            : 'rgba(255, 255, 255, 0.3)';
+                        ctx.fill();
+                    });
+                    requestAnimationFrame(animate);
+                };
+                animate();
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+            },
+
+            // 點擊音效
+            addClickSound: () => {
+                const sound = new Audio('https://www.soundjay.com/buttons/button-09.mp3');
+                document.querySelectorAll('.glass-button, .mode-toggle').forEach(el => {
+                    el.addEventListener('click', () => sound.play());
+                });
+            },
+
+            // 自動重定向
+            autoRedirect: () => {
+                setTimeout(() => {
+                    window.location.href = 'https://sakaouo.wuaze.com/index/index.php';
+                }, 3000);
+            },
+
+            // 初始化應用
+            init: () => {
+                App.initLightEffect();
+                App.initBackgroundParticles();
+                App.addClickSound();
+                App.autoRedirect();
             }
-        }
+        };
+
+        // 啟動應用
+        App.init();
+
+        // 暴露全局方法，供未來擴展使用
+        window.App = App;
     </script>
 </body>
 </html>
