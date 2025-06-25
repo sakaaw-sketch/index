@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Your Destination</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>選擇您的目的地</title>
     <style>
         :root {
-            /* CSS 變量，方便未來樣式擴展 */
             --glass-bg: rgba(255, 255, 255, 0.1);
             --blur-radius: 15px;
             --border-radius: 30px;
@@ -27,14 +26,13 @@
             overflow: hidden;
             transition: background 0.5s ease;
             position: relative;
+            -webkit-tap-highlight-color: transparent; /* 移除觸控高亮 */
         }
 
-        /* 模擬深色/淺色模式 */
         body.light-mode {
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
         }
 
-        /* 背景粒子畫布 */
         #particleCanvas {
             position: fixed;
             top: 0;
@@ -44,7 +42,6 @@
             z-index: -1;
         }
 
-        /* Headbar 樣式 */
         .headbar {
             position: fixed;
             top: 0;
@@ -61,10 +58,9 @@
             z-index: 1000;
         }
 
-        /* 主容器樣式 */
         .container {
             text-align: center;
-            padding: 40px;
+            padding: clamp(20px, 5vw, 40px);
             background: var(--glass-bg);
             backdrop-filter: blur(var(--blur-radius));
             border-radius: var(--border-radius);
@@ -73,9 +69,10 @@
             overflow: hidden;
             transition: all 0.3s ease;
             margin-top: 80px;
+            max-width: 90vw;
+            box-sizing: border-box;
         }
 
-        /* 液態玻璃效果：動態光影 */
         .container::before {
             content: '';
             position: absolute;
@@ -89,12 +86,12 @@
             transition: transform 0.5s ease;
         }
 
-        .container:hover::before {
+        .container:hover::before, .container:active::before {
             transform: translate(10%, 10%) scale(1.2);
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: clamp(2rem, 6vw, 3rem);
             color: var(--text-color-dark);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             margin: 0 0 20px;
@@ -105,10 +102,9 @@
             color: var(--text-color-light);
         }
 
-        /* 液態玻璃按鈕 */
         .glass-button {
-            padding: 15px 30px;
-            font-size: 1.1rem;
+            padding: clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px);
+            font-size: clamp(1rem, 3vw, 1.1rem);
             color: var(--text-color-dark);
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -120,13 +116,15 @@
             overflow: hidden;
             z-index: 1;
             margin: 10px;
+            width: 100%;
+            max-width: 300px;
+            touch-action: manipulation; /* 優化觸控 */
         }
 
         body.light-mode .glass-button {
             color: var(--text-color-light);
         }
 
-        /* 脈動光暈效果 */
         .glass-button::after {
             content: '';
             position: absolute;
@@ -146,26 +144,17 @@
         }
 
         @keyframes pulse {
-            0% {
-                opacity: 0.3;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
-            50% {
-                opacity: 0.6;
-                transform: translate(-50%, -50%) scale(1.2);
-            }
-            100% {
-                opacity: 0.3;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
+            0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
         }
 
-        .glass-button:hover {
+        .glass-button:hover, .glass-button:active {
             transform: scale(1.05);
             background: rgba(255, 255, 255, 0.25);
         }
 
-        .glass-button:hover::after {
+        .glass-button:hover::after, .glass-button:active::after {
             opacity: 0.8;
         }
 
@@ -181,13 +170,12 @@
             z-index: 0;
         }
 
-        .glass-button:hover::before {
+        .glass-button:hover::before, .glass-button:active::before {
             left: 100%;
         }
 
-        /* 動態適應模式切換按鈕 */
         .mode-toggle {
-            padding: 8px 16px;
+            padding: clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px);
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             border-radius: 15px;
@@ -195,89 +183,106 @@
             color: var(--text-color-dark);
             cursor: pointer;
             transition: background 0.3s ease;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
         }
 
         body.light-mode .mode-toggle {
             color: var(--text-color-light);
         }
 
-        .mode-toggle:hover {
+        .mode-toggle:hover, .mode-toggle:active {
             background: rgba(255, 255, 255, 0.2);
         }
 
         /* 響應式設計 */
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
-                margin-top: 100px;
+                margin-top: 70px;
+                padding: clamp(15px, 4vw, 20px);
+            }
+            .headbar {
+                height: 50px;
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin-top: 60px;
+                padding: clamp(10px, 3vw, 15px);
             }
             .glass-button {
-                padding: 12px 20px;
-                font-size: 1rem;
-                width: 100%;
-                margin: 10px 0;
+                margin: 8px 0;
+                max-width: 100%;
             }
             h1 {
-                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* 橫屏適配 */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                margin-top: 50px;
+                padding: clamp(10px, 2vw, 15px);
+            }
+            h1 {
+                font-size: clamp(1.5rem, 4vw, 2rem);
+            }
+            .glass-button {
+                padding: clamp(10px, 2vw, 12px) clamp(15px, 3vw, 20px);
+                font-size: clamp(0.9rem, 2.5vw, 1rem);
             }
         }
     </style>
 </head>
 <body>
-    <!-- 背景粒子畫布 -->
     <canvas id="particleCanvas"></canvas>
-
-    <!-- Headbar -->
     <header class="headbar">
-        <button class="mode-toggle" onclick="App.toggleMode()">Toggle Mode</button>
+        <button class="mode-toggle" onclick="App.toggleMode()">切換模式</button>
     </header>
-
     <div class="container">
-        <h1>Choose Your Destination</h1>
-        <button class="glass-button" onclick="App.redirectToMain()">Main Homepage</button>
-        <button class="glass-button" onclick="App.redirectToReception()">Music & CD</button>
+        <h1>選擇您的目的地</h1>
+        <button class="glass-button" onclick="App.redirectToMain()">總主頁</button>
+        <button class="glass-button" onclick="App.redirectToReception()">接待處主頁</button>
     </div>
 
     <script>
-        // 核心功能模塊
         const App = {
-            // 滑鼠移動觸發動態光影
             initLightEffect: () => {
                 const container = document.querySelector('.container');
-                container.addEventListener('mousemove', (e) => {
+                const handleMove = (e) => {
                     const rect = container.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+                    const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                    const y = (e.clientY || e.touches[0].clientY) - rect.top;
                     container.style.setProperty('--mouse-x', `${x}px`);
                     container.style.setProperty('--mouse-y', `${y}px`);
-                });
+                };
+                container.addEventListener('mousemove', handleMove);
+                container.addEventListener('touchmove', handleMove);
             },
 
-            // 重定向到總主頁
             redirectToMain: () => {
                 new Audio('https://www.soundjay.com/buttons/button-09.mp3').play();
                 window.location.href = 'https://sakaouo.wuaze.com/index/index.php';
             },
 
-            // 重定向到接待處主頁
             redirectToReception: () => {
                 new Audio('https://www.soundjay.com/buttons/button-09.mp3').play();
-                window.location.href = 'https://steamcd-project.netlify.app/music.html';
+                window.location.href = 'https://saka751.netlify.app/index1.html';
             },
 
-            // 模擬環境光線適應（深色/淺色模式）
             toggleMode: () => {
                 document.body.classList.toggle('light-mode');
             },
 
-            // 背景粒子效果
             initBackgroundParticles: () => {
                 const canvas = document.getElementById('particleCanvas');
                 const ctx = canvas.getContext('2d');
+                let particleCount = window.innerWidth < 768 ? 30 : 50; // 減少小屏幕粒子數
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-                const particles = Array.from({ length: 50 }, () => ({
+                const particles = Array.from({ length: particleCount }, () => ({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
                     radius: Math.random() * 5 + 2,
@@ -304,25 +309,24 @@
                 window.addEventListener('resize', () => {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
+                    particleCount = window.innerWidth < 768 ? 30 : 50;
                 });
             },
 
-            // 點擊音效
             addClickSound: () => {
                 const sound = new Audio('https://www.soundjay.com/buttons/button-09.mp3');
                 document.querySelectorAll('.glass-button, .mode-toggle').forEach(el => {
                     el.addEventListener('click', () => sound.play());
+                    el.addEventListener('touchstart', () => sound.play());
                 });
             },
 
-            // 自動重定向
             autoRedirect: () => {
                 setTimeout(() => {
                     window.location.href = 'https://sakaouo.wuaze.com/index/index.php';
                 }, 3000);
             },
 
-            // 初始化應用
             init: () => {
                 App.initLightEffect();
                 App.initBackgroundParticles();
@@ -331,10 +335,7 @@
             }
         };
 
-        // 啟動應用
         App.init();
-
-        // 暴露全局方法，供未來擴展使用
         window.App = App;
     </script>
 </body>
