@@ -240,6 +240,14 @@
                 alert("加入書籤失敗，請手動添加：\n1. 按 Ctrl+D（或 Cmd+D）\n2. 選擇添加書籤\n3. 儲存到您喜愛的位置");
             }
         }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const iframe = document.querySelector('iframe[title="主台狀態"]');
+    if (iframe && iframe.src.includes('?i=3')) {
+        iframe.src = 'https://sakaouo.a0001.net/googiehost/checkopen/checkop-g.html';
+    }
+});
     </script>
 </body>
 </html>
