@@ -243,10 +243,12 @@
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const iframe = document.querySelector('iframe[title="主台狀態"]');
-    if (iframe && iframe.src.includes('?i=3')) {
-        iframe.src = 'https://sakaouo.a0001.net/googiehost/checkopen/checkop-g.html';
-    }
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+        if (iframe.src.includes('checkop-g.html?i=3')) {
+            iframe.src = 'https://sakaouo.a0001.net/googiehost/checkopen/checkop-g.html';
+        }
+    });
 });
     </script>
 </body>
