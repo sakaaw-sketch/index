@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL 憑證到期提醒</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .certificate {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+        }
+        .certificate:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        .url {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        .details p {
+            margin: 8px 0;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        .countdown {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .normal {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .warning {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        .urgent {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .certificate {
+                max-width: 100%;
+                padding: 15px;
+            }
+            .url {
+                font-size: 1.2em;
+            }
+            .details p {
+                font-size: 0.95em;
+            }
+            .countdown {
+                font-size: 1.1em;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>SSL 憑證到期提醒</h1>
+    <div class="container">
+        <div class="certificate">
+            <div class="url">https://saka0u0.tplinkdns.com/</div>
+            <div class="details">
+                <p>憑證提供者: ZeroSSL</p>
+                <p>狀態: 有效</p>
+                <p>發行日期: 2025年9月16日 星期二 上午8:00:00</p>
+                <p>到期日期: 2025年12月16日 星期二 清晨7:59:59</p>
+            </div>
+            <div class="countdown" id="countdown1"></div>
+        </div>
+
+        <div class="certificate">
+            <div class="url">https://as4621.myddns.me:8443/</div>
+            <div class="details">
+                <p>憑證提供者: ZeroSSL</p>
+                <p>狀態: 有效</p>
+                <p>發行日期: 2025年9月16日 星期二 上午8:00:00</p>
+                <p>到期日期: 2025年12月16日 星期二 清晨7:59:59</p>
+            </div>
+            <div class="countdown" id="countdown2"></div>
+        </div>
+    </div>
+
+    <script>
+        // 到期日期 (使用 UTC 時間，根據需要調整)
+        const expiryDate = new Date('2025-12-16T07:59:59Z'); // 清晨7:59:59
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeDiff = expiryDate - now;
+
+            let countdownText;
+            let className = 'normal';
+
+            if (timeDiff <= 0) {
+                countdownText = '憑證已到期！請立即更新。';
+                className = 'urgent';
+            } else {
+                const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                countdownText = `剩餘時間: ${days} 天 ${hours} 小時 ${minutes} 分鐘 ${seconds} 秒鐘`;
+
+                if (days <= 7) {
+                    className = 'urgent';
+                } else if (days <= 30) {
+                    className = 'warning';
+                }
+            }
+
+            const countdown1 = document.getElementById('countdown1');
+            const countdown2 = document.getElementById('countdown2');
+
+            countdown1.innerHTML = countdownText;
+            countdown2.innerHTML = countdownText;
+
+            countdown1.className = 'countdown ' + className;
+            countdown2.className = 'countdown ' + className;
+        }
+
+        // 初始更新
+        updateCountdown();
+
+        // 每秒更新一次
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
