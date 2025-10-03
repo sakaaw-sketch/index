@@ -4,6 +4,9 @@ const urlsToCache = [
   '/css/index2.css',
   '/img/QR_code.png',
   '/img/dSF3zNo.gif',
+  '/favicon.ico',
+  '/css/styles.css',
+  '/img/error-image.png',
   '/favicon.ico'
 ];
 
