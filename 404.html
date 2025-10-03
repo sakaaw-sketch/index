@@ -1,43 +1,415 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <META HTTP-EQUIV="REFRESH" CONTENT="300; URL=index3.html">
-    <title>伺服器斷線</title>
+    <meta name="description" content="伺服器狀態監控 - 斷線提示">
+    <meta name="theme-color" content="#4f46e5">
+    <meta http-equiv="refresh" content="300; URL=index3.html">
+    <title>伺服器斷線 - 接待會客室</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --error-color: #ef4444;
+            --error-light: #f87171;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            
+            --light-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            
+            --card-bg-light: rgba(255, 255, 255, 0.15);
+            --card-bg-dark: rgba(30, 41, 59, 0.7);
+            --card-border-light: rgba(255, 255, 255, 0.2);
+            --card-border-dark: rgba(255, 255, 255, 0.1);
+            
+            --text-light: #1e293b;
+            --text-dark: #f1f5f9;
+            
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-error: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--text-dark);
+        }
+
+        /* 玻璃拟态效果 */
+        .glass-card {
+            background: var(--card-bg-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border-light);
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        }
+
+        .dark-mode .glass-card {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--card-border-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        /* 悬停动画 */
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-mode .glass-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 卡片内容 */
+        .card-content {
+            padding: 40px;
             text-align: center;
-            padding: 50px;
-            background-color: #f4f4f4;
         }
-        h1 {
-            color: #d32f2f;
+
+        @media (max-width: 768px) {
+            .card-content {
+                padding: 30px 20px;
+            }
         }
-        img {
-            max-width: 100%;
+
+        /* 错误图标 */
+        .error-icon {
+            font-size: 4rem;
+            color: var(--error-color);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* 标题样式 */
+        .error-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--error-color);
+            text-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .dark-mode .error-title {
+            color: var(--error-light);
+        }
+
+        /* 错误图片 */
+        .error-image {
+            max-width: 300px;
+            width: 100%;
             height: auto;
+            border-radius: 16px;
             margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
         }
-        p {
-            font-size: 18px;
-            color: #333;
+
+        .error-image:hover {
+            transform: scale(1.05);
         }
-        a {
-            color: #1976d2;
+
+        /* 错误消息 */
+        .error-message {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        /* 替代链接 */
+        .alternative-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
             text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 500;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
-        a:hover {
-            text-decoration: underline;
+
+        .alternative-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg-light);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border-light);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            color: var(--primary-color);
+        }
+
+        .dark-mode .theme-toggle {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--card-border-dark);
+            color: var(--primary-light);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg) scale(1.1);
+        }
+
+        /* 自动刷新提示 */
+        .refresh-notice {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .dark-mode .refresh-notice {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .primary-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+
+        .dark-mode .secondary-btn {
+            color: var(--text-dark);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .error-title {
+                font-size: 2rem;
+            }
+            
+            .error-message {
+                font-size: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
-<body>
-    <h1>伺服器斷線</h1>
-    <img src="https://i.imgur.com/s9D4Q14.png" alt="備用圖片">
-    <p>伺服器斷線！請稍後再試，或聯繫管理員：admin@example.com</p>
-    <p>暫時使用<a href="https://steamcd-project.netlify.app/music.html">自訂音樂與CD旋轉播放器</a>代替着啦</p>
+<body class="light-mode">
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- 主内容卡片 -->
+    <div class="glass-card">
+        <div class="card-content">
+            <!-- 错误图标 -->
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            
+            <!-- 错误标题 -->
+            <h1 class="error-title">伺服器斷線</h1>
+            
+            <!-- 错误图片 -->
+            <img src="https://i.imgur.com/s9D4Q14.png" alt="伺服器斷線示意圖" class="error-image">
+            
+            <!-- 错误消息 -->
+            <p class="error-message">
+                伺服器目前無法連線，請稍後再試。<br>
+                如需協助，請聯繫管理員：admin@example.com
+            </p>
+            
+            <!-- 替代方案 -->
+            <a href="https://steamcd-project.netlify.app/music.html" class="alternative-link">
+                <i class="fas fa-music"></i>
+                使用自訂音樂與 CD 旋轉播放器
+            </a>
+            
+            <!-- 操作按钮组 -->
+            <div class="action-buttons">
+                <a href="javascript:location.reload()" class="action-btn primary-btn">
+                    <i class="fas fa-redo"></i>
+                    重新整理頁面
+                </a>
+                <a href="/" class="action-btn secondary-btn">
+                    <i class="fas fa-home"></i>
+                    返回首頁
+                </a>
+            </div>
+            
+            <!-- 自动刷新提示 -->
+            <div class="refresh-notice">
+                <i class="fas fa-clock"></i>
+                頁面將在 5 分鐘後自動重新導向
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // 检查本地存储的主题设置
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // 添加页面加载动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const card = document.querySelector('.glass-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
 </body>
 </html>
