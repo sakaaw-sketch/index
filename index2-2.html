@@ -12,17 +12,279 @@
     <link rel="bookmark" href="/favicon.ico"/>
     <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
-    <!-- Bootstrap 4.6.2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" defer>
-    <link rel="stylesheet" href="css/index2.css?v=1728902400">
-    <!-- 系統主題切換 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous">
     <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --secondary-blue: #0a58ca;
+            --light-blue: #e3f2fd;
+            --gradient-start: #1e3c72;
+            --gradient-end: #2a5298;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-dark: #212529;
+            --text-light: #f8f9fa;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-top: 76px;
+            transition: var(--transition);
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue);
+            transition: var(--transition);
+        }
+
+        .navbar-brand:hover {
+            color: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .nav-link {
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: var(--transition);
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        /* 按钮样式 */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+        }
+
+        .btn-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .btn-link:hover {
+            color: var(--secondary-blue);
+            background-color: var(--light-blue);
+            transform: translateY(-2px);
+        }
+
+        /* 卡片样式 */
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            background-color: var(--card-bg);
+            transition: var(--transition);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            border-bottom: none;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem 1rem 0 0 !important;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* 服务器状态卡片 */
+        .server-status-card {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        /* 内容框架样式 */
+        .content-frame {
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .content-frame:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .responsive-iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        /* 加载动画 */
+        .iframe-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 10;
+            border-radius: 0.5rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(13, 110, 253, 0.2);
+            border-left: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 淡入动画 */
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 二维码样式 */
+        .qr-code {
+            max-width: 150px;
+            border-radius: 0.5rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 列表样式 */
+        .list-unstyled li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .responsive-iframe {
+                height: 200px;
+            }
+        }
+
+        /* 暗色模式支持 */
         @media (prefers-color-scheme: dark) {
+            :root {
+                --card-bg: rgba(33, 37, 41, 0.9);
+                --text-dark: #f8f9fa;
+            }
+            
             body:not(.light) {
-                background: linear-gradient(135deg, #1a202c, #2d3748);
-                color: #e0e0e0;
+                background: linear-gradient(135deg, #0f172a, #1e293b);
+            }
+            
+            .navbar {
+                background: rgba(33, 37, 41, 0.95);
+            }
+            
+            .nav-link {
+                color: var(--text-light);
+            }
+            
+            .nav-link:hover {
+                background-color: rgba(13, 110, 253, 0.2);
+            }
+            
+            .btn-link {
+                color: #6ea8fe;
+            }
+            
+            .btn-link:hover {
+                color: #8bb9fe;
+                background-color: rgba(13, 110, 253, 0.1);
             }
         }
     </style>
@@ -30,20 +292,18 @@
 <body class="light">
     <!-- 導航欄 -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container-fluid">
+        <div class="container">
             <a class="navbar-brand" href="#">接待處-(異地&自架)</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto align-items-center">
-                    <li class="nav-item">
-<button class="btn btn-refresh" ><a href="https://saka751.netlify.app/index.html"><i class="fas fa-sync-alt me-1"></i> 回主頁</a></button>
-              <!--          <a class="nav-link" href="#"><i class="fas fa-sign-in-alt me-1"></i> 會員中心</a> -->
-          <button class="btn btn-refresh" onclick="window.location.reload()"><i class="fas fa-sync-alt me-1"></i> 重新整理</button>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-2">
+                        <a class="btn btn-primary" href='https://saka751.netlify.app/'><i class="fas fa-home me-1"></i> 回主頁</a>
                     </li>
                     <li class="nav-item">
-          <!--                <a class="nav-link" href="#"><i class="fas fa-user-plus me-1"></i> 註冊</a>          -->
+                        <button class="btn btn-outline-primary" onclick="window.location.reload()"><i class="fas fa-sync-alt me-1"></i> 重新整理</button>
                     </li>
                 </ul>
             </div>
@@ -59,7 +319,7 @@
             <div class="card-body text-center">
                 <p>伺服器斷線！請稍後再試，或聯繫管理員：admin@example.com</p>
                 <p>暫時使用 <a href="https://steamcd-project.netlify.app/music.html" class="btn btn-link">自訂音樂與 CD 旋轉播放器</a> 代替。</p>
-                <button class="btn btn-retry" onclick="checkServerStatus()"><i class="fas fa-sync-alt me-1"></i> 重試</button>
+                <button class="btn btn-primary" onclick="checkServerStatus()"><i class="fas fa-sync-alt me-1"></i> 重試</button>
             </div>
         </div>
     </div>
@@ -70,55 +330,26 @@
             <!-- 左側內容 -->
             <div class="col-lg-8">
                 <!-- 檢查伺服器狀態 -->
-                <div class="card mb-4">
+                <div class="card mb-4 fade-in">
                     <div class="card-header">
                         <h3 class="card-title">檢查伺服器狀態</h3>
                     </div>
                     <div class="card-body">
-         <!--                <h4 id="server-status-front">前台-(異地)</h4>  -->
-                        <div class="content-frame mb-3">
-                           
-        <!--               
- <div class="iframe-loading" id="iframeLoadingFront"><div class="spinner"></div></div>
-
-      <iframe src="http://aw135.medianewsonline.com/index.php" class="responsive-iframe" title="前台狀態" loading="lazy" onload="hideIframeLoading('iframeLoadingFront')"></iframe>
-                        </div>
-           
-                    
-       <p><a href="http://sakaouo.myartsonline.com/funtions/Home/Check_Server/before/index_choose.php" target="_blank" class="btn btn-link"><i class="fas fa-link me-1"></i> 備用連結</a></p> 
--->  
-
-
-
- <!--   <h4 id="server-status-main">主台-(自架)</h4> -->
-                        <div class="content-frame mb-3">
-                          
-     <!--           
-  <div class="iframe-loading" id="iframeLoadingMain"><div class="spinner"></div></div>
- 
- <iframe src="https://saka751.netlify.app/index2-2_3.html" class="responsive-iframe" title="主台狀態" loading="lazy" onload="hideIframeLoading('iframeLoadingMain')"></iframe>
-                      
-  </div>
-                本來的  
-	<p><a href="http://sakaouo.myartsonline.com/funtions/Home/Check_Server/before/index_choose2.php" target="_blank" class="btn btn-link"><i class="fas fa-link me-1"></i> 備用連結</a></p>
- -->     
-	         <h4 id="server-status-check">狀態檢查</h4>
+                        <h4 id="server-status-check" class="mb-3">狀態檢查</h4>
                         <ul class="list-unstyled">
-                           
-			<li><a href="https://saka751.netlify.app/index2-2_2.html" target="_blank" class="btn btn-link"><i class="fas fa-server me-1"></i> 前台&主台-(異地)</a></li>
-                            <li><a href="https://saka751.netlify.app/index2-2_3.html"  class="btn btn-link"><i class="fas fa-server me-1"></i> 前台&主台-<font color="red">(自架)</font></a></li>
+                            <li><a class='btn btn-link d-block text-start mb-2' href='https://saka751.netlify.app/index2-2_2' target='_blank'><i class="fas fa-server me-2"></i> 前台&主台-(異地)</a></li>
+                            <li><a class='btn btn-link d-block text-start' href='https://saka751.netlify.app/index2-2_3'><i class="fas fa-server me-2"></i> 前台&主台-<span class="text-danger">(自架)</span></a></li>
                         </ul>
                     </div>
                 </div>
                 <!-- 其他功能 -->
-                <div class="card mb-4">
+                <div class="card mb-4 fade-in">
                     <div class="card-header">
                         <h3 class="card-title">其他功能</h3>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
-
-                            <li><a href="https://steamcd-project.netlify.app/music.html" class="btn btn-link"><i class="fas fa-music me-1"></i> 自訂音樂與 CD 旋轉</a></li>
+                            <li><a href="https://steamcd-project.netlify.app/music.html" class="btn btn-link d-block text-start"><i class="fas fa-music me-2"></i> 自訂音樂與 CD 旋轉</a></li>
                         </ul>
                     </div>
                 </div>
@@ -126,7 +357,7 @@
             <!-- 右側內容 -->
             <div class="col-lg-4">
                 <!-- 資訊面板 -->
-                <div class="card mb-4">
+                <div class="card mb-4 fade-in">
                     <div class="card-header">
                         <h3 class="card-title">資訊</h3>
                     </div>
@@ -137,22 +368,20 @@
                     </div>
                 </div>
                 <!-- 目錄 -->
-                <div class="card mb-4">
+                <div class="card mb-4 fade-in">
                     <div class="card-header">
                         <h3 class="card-title">目錄</h3>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
-                            <li><a href="#server-status-front" class="btn btn-link"><i class="fas fa-server me-1"></i> 檢查伺服器狀態 - 前台</a></li>
-                            <li><a href="#server-status-main" class="btn btn-link"><i class="fas fa-server me-1"></i> 檢查伺服器狀態 - 主台</a></li>
-                            <li><a href="#server-status-check" class="btn btn-link"><i class="fas fa-server me-1"></i> 狀態檢查</a></li>
-                            <li><a href="#other-functions" class="btn btn-link"><i class="fas fa-tools me-1"></i> 其他功能</a></li>
-                            <li><a href="https://saka751.netlify.app/wordpress/" class="btn btn-link"><i class="fas fa-users me-1"></i> 坂妹社</a></li>
+                            <li><a href="#server-status-check" class="btn btn-link d-block text-start mb-2"><i class="fas fa-server me-2"></i> 狀態檢查</a></li>
+                            <li><a href="#other-functions" class="btn btn-link d-block text-start mb-2"><i class="fas fa-tools me-2"></i> 其他功能</a></li>
+                            <li><a href="https://saka751.netlify.app/wordpress/" class="btn btn-link d-block text-start"><i class="fas fa-users me-2"></i> 坂妹社</a></li>
                         </ul>
                     </div>
                 </div>
                 <!-- 說明 -->
-                <div class="card mb-4">
+                <div class="card mb-4 fade-in">
                     <div class="card-header">
                         <h3 class="card-title">說明</h3>
                     </div>
@@ -163,16 +392,16 @@
                         <p>可手動重新整理頁面以更新狀態。</p>
                         <div class="content-frame mb-3">
                             <div class="iframe-loading" id="iframeLoadingVer"><div class="spinner"></div></div>
-                            <iframe src="http://aw135.medianewsonline.com/home/ver/ver.php" class="responsive-iframe version-iframe" title="版本資訊" loading="lazy" onload="hideIframeLoading('iframeLoadingVer')"></iframe>
+                            <iframe src="https://madoka.66ghz.com/home/ver/ver.php" class="responsive-iframe version-iframe" title="版本資訊" loading="lazy" onload="hideIframeLoading('iframeLoadingVer')"></iframe>
                         </div>
-      <!--        <button class="btn btn-refresh" onclick="window.location.reload()"><i class="fas fa-sync-alt me-1"></i> 重新整理</button>  -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // 伺服器狀態檢查
         function checkServerStatus(retryCount = 0, maxRetries = 3) {
@@ -210,8 +439,9 @@
         // 頁面載入時檢查伺服器狀態
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(checkServerStatus, 1000);
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.add('fade-in');
+            // 添加淡入动画延迟
+            document.querySelectorAll('.fade-in').forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
             });
         });
 
