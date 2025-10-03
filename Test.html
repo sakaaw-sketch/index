@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="伺服器狀態現況監控 - 主台">
+    <meta name="theme-color" content="#4f46e5">
+    <title>伺服器狀態現況 - 主台</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #7c73e6;
+            --light-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-bg: linear-gradient(135deg, #1a202c, #2d3748);
+            --card-bg-light: rgba(255, 255, 255, 0.25);
+            --card-bg-dark: rgba(30, 41, 59, 0.7);
+            --text-light: #333;
+            --text-dark: #e0e0e0;
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 玻璃拟态效果 */
+        .glass-card {
+            background: var(--card-bg-light);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 24px;
+        }
+
+        .dark-mode .glass-card {
+            background: var(--card-bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-dark);
+        }
+
+        /* 悬停动画 */
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-mode .glass-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 标题样式 */
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+
+        .dark-mode .card-title {
+            color: #a5b4fc;
+        }
+
+        /* 按钮样式 */
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .dark-mode .btn-link {
+            color: #a5b4fc;
+        }
+
+        .btn-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* iframe 容器 */
+        .iframe-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            height: 300px;
+        }
+
+        .responsive-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+
+        /* 加载动画 */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        .dark-mode .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #a5b4fc;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 错误消息 */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .dark-mode .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        /* 计时器 */
+        .timer-display {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 16px;
+            background: var(--card-bg-light);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark-mode .timer-display {
+            background: var(--card-bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 网格布局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg-light);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dark-mode .theme-toggle {
+            background: var(--card-bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        /* 服务器状态标签 */
+        .server-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .status-selfhost {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .dark-mode .status-selfhost {
+            background-color: #065f46;
+            color: #d1fae5;
+        }
+        
+        .status-backup {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .dark-mode .status-backup {
+            background-color: #92400e;
+            color: #fef3c7;
+        }
+        
+        .status-unlimited {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .dark-mode .status-unlimited {
+            background-color: #1e40af;
+            color: #dbeafe;
+        }
+
+        /* 图片样式 */
+        .fun-gif {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .iframe-container {
+                height: 250px;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- 載入中訊息 -->
+    <div id="loading-message" class="loading-container">
+        <div class="spinner"></div>
+        <h1 class="text-2xl font-bold mb-2">檢查伺服器狀態...</h1>
+        <p class="text-gray-500">正在測試伺服器...</p>
+    </div>
+
+    <!-- 主內容容器 -->
+    <div class="container">
+        <!-- 伺服器錯誤訊息 -->
+        <div id="server-error" class="error-message hidden">
+            無法連接到伺服器，請稍後再試或聯繫管理員：admin@example.com
+        </div>
+
+        <div id="content-container" class="hidden">
+            <!-- 計時器顯示 -->
+            <div id="timer-display" class="timer-display">
+                剩餘時間: 02:00
+            </div>
+
+            <!-- 檢查區域 -->
+            <div class="grid-container">
+                <div class="glass-card">
+                    <h2 class="card-title">檢查 <span class="server-status status-backup">備份</span></h2>
+                    <div class="iframe-container">
+                        <iframe
+                            src="https://sakaouo.whf.bz/checkopen/for_check/checkopen-netlify.html"
+                            class="responsive-iframe"
+                            title="檢查"
+                        ></iframe>
+                    </div>
+                    <a href="#top" class="btn-link">回到頂部</a>
+                </div>
+
+                <div class="glass-card">
+                    <h2 class="card-title">檢查2 <span class="server-status status-selfhost">自架伺服</span></h2>
+                    <div class="iframe-container">
+                        <iframe
+                            src="https://as4621.myddns.me:8443/home/for_check/checkopen-netlify.html"
+                            class="responsive-iframe"
+                            title="檢查2(自架伺服)"
+                        ></iframe>
+                    </div>
+                    <a
+                        href="http://as4621.myddns.me:16080/home/for_check/checkopen-netlify.html"
+                        class="btn-link"
+                    >
+                        點去查看啦(備用2-自架伺服)
+                    </a>
+                    <a href="#top" class="btn-link">回到頂部</a>
+                </div>
+
+                <div class="glass-card">
+                    <h2 class="card-title">檢查3 <span class="server-status status-unlimited">無限流量-備份</span></h2>
+                    <div class="iframe-container">
+                        <iframe
+                            src="https://sakasaka.22web.org/infinityfree/for_check/checkopen801/checkopen-netlify.html"
+                            class="responsive-iframe"
+                            title="檢查3(異地-無限流量-備份)"
+                        ></iframe>
+                    </div>
+                    <a
+                        href="https://sakasaka.22web.org/infinityfree/for_check/checkopen801/checkopen-netlify.html"
+                        class="btn-link"
+                    >
+                        點去查看啦檢查3(異地-無限流量-備份)
+                    </a>
+                    <a href="#top" class="btn-link">回到頂部</a>
+                </div>
+
+                <div class="glass-card">
+                    <h2 class="card-title">檢查4 <span class="server-status status-backup">異地備份-有限</span></h2>
+                    <div class="iframe-container">
+                        <iframe
+                            src="https://sakaouo.wuaze.com/index/for_check/checkopen801/checkopen-netlify.html"
+                            class="responsive-iframe"
+                            title="檢查4(異地備份-有限)"
+                        ></iframe>
+                    </div>
+                    <a
+                        href="https://sakaouo.wuaze.com/index/for_check/checkopen801/checkopen-netlify.html"
+                        class="btn-link"
+                    >
+                        點去查看啦(備用4-有限)
+                    </a>
+                    <a href="#top" class="btn-link">回到頂部</a>
+                </div>
+            </div>
+
+            <!-- 信息面板 -->
+            <div class="glass-card text-center">
+                <h2 class="card-title">信息</h2>
+                <img src="/img/dSF3zNo.gif" alt="hihi" class="fun-gif mx-auto" />
+                <p class="mb-4">伺服器狀態信息</p>
+                <button
+                    onclick="addBookmark()"
+                    class="btn-primary"
+                >
+                    添加書籤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // 检查本地存储的主题设置
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // 書籤功能
+        function addBookmark() {
+            const title = document.title;
+            const url = window.location.href;
+            if (window.sidebar && window.sidebar.addPanel) {
+                window.sidebar.addPanel(title, url, '');
+            } else if (window.external && 'AddFavorite' in window.external) {
+                window.external.AddFavorite(url, title);
+            } else {
+                alert('您的瀏覽器不支援此功能，請手動添加書籤！');
+            }
+        }
+
+        // 檢查伺服器狀態
+        function checkServerStatus() {
+            console.log('Checking server status...');
+            fetch('/api/home', { method: 'GET', cache: 'no-cache' })
+                .then(response => {
+                    document.getElementById('loading-message').classList.add('hidden');
+                    document.getElementById('content-container').classList.remove('hidden');
+                    if (!response.ok) {
+                        document.getElementById('server-error').classList.remove('hidden');
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('loading-message').classList.add('hidden');
+                    document.getElementById('content-container').classList.remove('hidden');
+                    document.getElementById('server-error').classList.remove('hidden');
+                });
+        }
+
+        // 計時器功能
+        function startTimer() {
+            let remainingSeconds = 120; // 2 分鐘
+            const display = document.getElementById('timer-display');
+            const interval = setInterval(() => {
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                display.textContent = `剩餘時間: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (remainingSeconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = 'http://saka751.netlify.app/test';
+                }
+                remainingSeconds--;
+            }, 1000);
+        }
+
+        // 頁面載入時執行
+        window.onload = function () {
+            setTimeout(checkServerStatus, 1000);
+            startTimer();
+        };
+
+        // 添加隐藏类
+        document.addEventListener('DOMContentLoaded', () => {
+            const style = document.createElement('style');
+            style.textContent = '.hidden { display: none !important; }';
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
