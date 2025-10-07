@@ -160,6 +160,26 @@
             color: var(--primary-color);
         }
 
+        .manual-link {
+            margin-top: 25px;
+            padding: 12px 25px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .manual-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .glass-card {
                 padding: 30px 20px;
@@ -222,6 +242,10 @@
                     <div>黑暗模式</div>
                 </div>
             </div>
+            
+            <a href="https://acgms35.66ghz.com/c/index_choose.php" class="manual-link">
+                <i class="fas fa-external-link-alt me-2"></i>立即前往
+            </a>
         </div>
     </div>
 
@@ -236,8 +260,8 @@
             
             if (countdown <= 0) {
                 clearInterval(countdownInterval);
-                // 實際應用中這裡會進行跳轉
-                // window.location.href = "https://acgms35.66ghz.com/c/index_choose.php";
+                // 實際跳轉到目標頁面
+                window.location.href = "https://acgms35.66ghz.com/c/index_choose.php";
             }
         }, 1000);
         
