@@ -156,7 +156,8 @@
         
         <div class="countdown" id="countdown">5 秒後重定向</div>
         
-        <a href="http://sakaouo.hostingem.ru/home/history_announcement/announcement_choose.php" class="btn" id="redirectBtn">立即前往</a>
+        <a href="http://sakaouo.hostingem.ru/home/history_announcement/announcement_choose.php" class="btn" id="redirectBtn">立即前往-異地版</a>
+          <a href="https://saka751.netlify.app/home/history_announcement/announcement_choose.html" class="btn" id="redirectBtn2">立即前往-本地版</a>
     </div>
 
     <script>
@@ -177,6 +178,14 @@
         
         // 手动跳转按钮点击事件
         redirectBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            clearInterval(countdownInterval);
+            window.location.href = "http://sakaouo.hostingem.ru/home/history_announcement/announcement_choose.php";
+        });
+
+
+          // 手动跳转按钮点击事件2
+        redirectBtn2.addEventListener('click', (e) => {
             e.preventDefault();
             clearInterval(countdownInterval);
             window.location.href = "http://sakaouo.hostingem.ru/home/history_announcement/announcement_choose.php";
