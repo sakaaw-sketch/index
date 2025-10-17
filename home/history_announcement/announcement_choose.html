@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="網站導航中心 - 現代化選擇界面-公告">
+    <meta name="theme-color" content="#4f46e5">
+    <title>網站導航 - 現代化選擇界面-公告</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            
+            --light-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            
+            --card-bg-light: rgba(255, 255, 255, 0.15);
+            --card-bg-dark: rgba(30, 41, 59, 0.7);
+            --card-border-light: rgba(255, 255, 255, 0.2);
+            --card-border-dark: rgba(255, 255, 255, 0.1);
+            
+            --text-light: #1e293b;
+            --text-dark: #f1f5f9;
+            
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            transition: all 0.4s ease;
+            padding: 20px;
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--text-dark);
+        }
+
+        /* 容器布局 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 玻璃拟态效果 */
+        .glass-card {
+            background: var(--card-bg-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border-light);
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        }
+
+        .dark-mode .glass-card {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--card-border-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        /* 悬停动画 */
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-mode .glass-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 标题样式 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 网格布局 */
+        .sites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        /* 网站卡片 */
+        .site-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 最新版本卡片样式 */
+        .site-card.featured {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .site-card.featured .site-image {
+            height: 100%;
+            border-radius: 16px 0 0 16px;
+        }
+
+        .site-card.featured .site-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .site-card.featured .site-title {
+            font-size: 2rem;
+        }
+
+        .site-card.featured .site-description {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .site-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .site-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .dark-mode .site-title {
+            color: var(--primary-light);
+        }
+
+        /* 旧版样式 */
+        .site-title.old-version {
+            color: var(--error-color);
+            position: relative;
+        }
+
+        .site-title.old-version::after {
+            content: "舊版-不再更新";
+            background: var(--error-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .dark-mode .site-title.old-version {
+            color: var(--error-color);
+        }
+
+        /* 新版样式 */
+        .site-title.new-version {
+            color: var(--success-color);
+            position: relative;
+        }
+
+        .site-title.new-version::after {
+            content: "最新版本";
+            background: var(--success-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .site-description {
+            color: inherit;
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* 按钮样式 */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* 新版按钮样式 */
+        .btn-featured {
+            background: linear-gradient(135deg, var(--success-color), var(--accent-color));
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .btn-featured:hover {
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-disabled {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            cursor: not-allowed;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg-light);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border-light);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            color: var(--primary-color);
+        }
+
+        .dark-mode .theme-toggle {
+            background: var(--card-bg-dark);
+            border: 1px solid var(--card-border-dark);
+            color: var(--primary-light);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg) scale(1.1);
+        }
+
+        /* 页脚 */
+        .page-footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* 装饰元素 */
+        .decoration-dots {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+
+        .decoration-dots-1 {
+            top: 10%;
+            left: 5%;
+        }
+
+        .decoration-dots-2 {
+            bottom: 10%;
+            right: 5%;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .stagger-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .stagger-delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .stagger-delay-3 { animation-delay: 0.3s; opacity: 0; }
+
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+            .site-card.featured {
+                grid-template-columns: 1fr;
+            }
+            
+            .site-card.featured .site-image {
+                height: 250px;
+                border-radius: 16px 16px 0 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+            }
+            
+            .sites-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .site-image {
+                height: 180px;
+            }
+            
+            .site-card.featured .site-content {
+                padding: 30px 20px;
+            }
+            
+            .site-card.featured .site-title {
+                font-size: 1.75rem;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .site-content {
+                padding: 20px;
+            }
+            
+            .site-card.featured .site-content {
+                padding: 20px;
+            }
+            
+            .site-card.featured .site-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- 装饰元素 -->
+    <div class="decoration-dots decoration-dots-1"></div>
+    <div class="decoration-dots decoration-dots-2"></div>
+
+    <div class="container">
+        <!-- 页面标题 -->
+        <header class="page-header glass-card fade-in-up">
+            <h1 class="page-title">🌐 網站導航中心-公告</h1>
+            <p class="page-subtitle">
+                快速訪問我們的公告服務，確保一切順利運行！<br>
+                <span style="color: var(--success-color); font-weight: 600;">✨ 推薦使用最新版本以獲得最佳體驗</span>
+            </p>
+        </header>
+
+        <!-- 网站卡片网格 -->
+        <div class="sites-grid">
+            <!-- 最新版本 - 系统公告中心 -->
+            <div class="glass-card site-card featured fade-in-up stagger-delay-1">
+                <img src="https://i.imgur.com/qidmaN5.png" alt="系統公告中心" class="site-image">
+                <div class="site-content">
+                    <h3 class="site-title new-version">系統公告中心</h3>
+                    <p class="site-description">
+                        即時掌握最新系統更新、功能改進與問題修復記錄。<br>
+                        <strong>最新版本提供更快的載入速度、更好的用戶體驗和更多實用功能。</strong>
+                    </p>
+                    <a href="https://saka-history.66ghz.com/" class="btn-primary btn-featured">
+                        <i class="fas fa-rocket"></i>
+                        立即訪問系統公告中心(最新-異地版本)
+                    </a>
+   <a href="https://saka0u0.tplinkdns.com/2.History/index.php?Ver=3.0" class="btn-primary btn-featured">
+                        <i class="fas fa-rocket"></i>
+                        立即訪問系統公告中心(最新-本地版本)
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- 舊版本卡片 -->
+            <div class="glass-card site-card fade-in-up stagger-delay-2">
+                <img src="https://i.imgur.com/Gz2l55f.png" alt="接待處主頁-公告" class="site-image">
+                <div class="site-content">
+                    <h3 class="site-title old-version">接待處主頁-公告</h3>
+                    <p class="site-description">
+                        位於接待處主頁(saka751.netlify.app)的公告。
+                        <span style="color: var(--error-color); font-weight: 600;">此版本已不再更新維護。</span>
+                    </p>
+                    <a href="https://saka751.netlify.app/history_ms/" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        訪問接待處-公告
+                    </a>
+                </div>
+            </div>
+
+            <!-- 長期統計中心-公告 -->
+            <div class="glass-card site-card fade-in-up stagger-delay-3">
+                <img src="https://i.imgur.com/vDQjhkq.png" alt="長期統計中心-公告" class="site-image">
+                <div class="site-content">
+                    <h3 class="site-title old-version">長期統計中心-公告</h3>
+                    <p class="site-description">
+                        位於長期統計中心(sakaouo.myartsonline.com)的公告。
+                        <span style="color: var(--error-color); font-weight: 600;">需要登入，此版本已不再更新維護。</span>
+                    </p>
+                    <a href="http://sakaouo.myartsonline.com/funtions/announcement_board.php" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        訪問長期統計中心-公告
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="page-footer glass-card">
+            <p>&copy; 2024 網站導航中心 | By Saka</p>
+        </footer>
+    </div>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // 检查本地存储的主题设置
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // 添加页面加载动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.fade-in-up');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+            });
+            
+            setTimeout(() => {
+                animatedElements.forEach(el => {
+                    el.style.opacity = '1';
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
